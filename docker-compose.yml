@@ -1,0 +1,38 @@
+services:
+  mongo:
+    image: mongo:7.0
+    restart: always
+    container_name: mongo
+    env_file:
+      - .env.mongo
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      main:
+        aliases:
+          - mongo
+
+  backend:
+    build:
+      context: .
+    container_name: backend
+    restart: always
+    depends_on:
+      - mongo
+    env_file:
+      - .env.docker
+    ports:
+      - "5050:5050"
+    networks:
+      main:
+        aliases:
+          - backend
+
+volumes:
+  mongo_data:
+
+networks:
+  main:
