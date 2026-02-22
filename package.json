@@ -1,20 +1,47 @@
 {
   "name": "devops-practice",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "E-Commerce REST API backend with Express, PostgreSQL and Prisma",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "cross-env DOTENV_CONFIG_PATH=.env.dev node --watch -r dotenv/config src/server.js",
+    "prod": "cross-env DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config src/server.js",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "postinstall": "prisma generate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "docker compose up -d --build backend",
+    "logs": "docker logs backend -f"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/idreesahmed1257/DevOps-Practice.git"
   },
-  "keywords": [],
+  "keywords": [
+    "express",
+    "postgresql",
+    "prisma",
+    "ecommerce",
+    "rest-api"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/idreesahmed1257/DevOps-Practice/issues"
   },
-  "homepage": "https://github.com/idreesahmed1257/DevOps-Practice#readme"
+  "homepage": "https://github.com/idreesahmed1257/DevOps-Practice#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.4.1",
+    "@prisma/client": "^7.4.1",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.4.1"
+  }
 }

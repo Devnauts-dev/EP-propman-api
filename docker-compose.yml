@@ -1,19 +1,20 @@
 services:
-  mongo:
-    image: mongo:7.0
+  postgres:
+    image: postgres:16-alpine
     restart: always
-    container_name: mongo
-    env_file:
-      - .env.mongo
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - mongo_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "27017:27017"
+      - "5433:5432"
     networks:
       main:
         aliases:
-          - mongo
+          - postgres
 
   backend:
     build:
@@ -21,9 +22,11 @@ services:
     container_name: backend
     restart: always
     depends_on:
-      - mongo
+      - postgres
     env_file:
       - .env.docker
+    environment:
+      PORT: 5050
     ports:
       - "5050:5050"
     networks:
@@ -32,7 +35,7 @@ services:
           - backend
 
 volumes:
-  mongo_data:
+  postgres_data:
 
 networks:
   main:
