@@ -9,6 +9,7 @@ node_modules/
 .env.local
 .env.*.local
 !.env.example
+.env.postgres
 
 # Build / output
 dist/
