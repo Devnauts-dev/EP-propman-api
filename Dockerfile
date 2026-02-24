@@ -12,4 +12,6 @@ RUN npx prisma generate
 
 EXPOSE 5050
 
-CMD ["node", "src/server.js"]
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
+CMD ["./docker-entrypoint.sh"]

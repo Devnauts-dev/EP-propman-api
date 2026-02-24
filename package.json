@@ -13,6 +13,7 @@
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "docker compose up -d --build backend",
+    "deploy:migrate": "docker compose exec backend npx prisma migrate deploy",
     "logs": "docker logs backend -f"
   },
   "repository": {
