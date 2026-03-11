@@ -1,15 +1,17 @@
 const app = require('./app');
 const config = require('./config');
 const prisma = require('./lib/prisma');
-require('dotenv').config()
+const { bootstrapSuperAdminFromEnv } = require('./modules/auth/auth.service');
+require('dotenv').config();
 
 async function start() {
   try {
-    console.log(process.env.DATABASE_URL)
+    config.validateConfig();
     await prisma.$connect();
     console.log('PostgreSQL connected (Prisma)');
+    await bootstrapSuperAdminFromEnv();
   } catch (err) {
-    console.error('PostgreSQL connection failed:', err.message);
+    console.error('Server startup failed:', err.message);
     process.exit(1);
   }
 

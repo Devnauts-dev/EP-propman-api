@@ -1,144 +1,101 @@
-# DevOps-Practice
+# EP PropMan API
 
-E-Commerce REST API backend built with **Node.js**, **Express**, **PostgreSQL**, and **Prisma**.
+Backend API for authentication and role-based access control (RBAC) using:
 
-## Project structure (scalable)
+- Node.js + Express
+- PostgreSQL + Prisma
+- JWT (access + refresh tokens)
+- Jest tests
 
-```
-prisma/
-└── schema.prisma           # Prisma schema (models, datasource)
+## Roles
 
-src/
-├── app.js                  # Express app (middleware, routes)
-├── server.js               # Entry point, Prisma connect, listen
-├── config/
-│   └── index.js            # Env/config
-├── lib/
-│   └── prisma.js           # Prisma Client singleton
-├── modules/
-│   └── products/           # Products feature module
-│       ├── index.js
-│       ├── product.routes.js
-│       ├── product.controller.js
-│       ├── product.service.js
-│       └── product.repository.js   # Uses Prisma
-└── shared/
-    ├── middleware/         # errorHandler, notFound
-    ├── errors/             # AppError
-    └── utils/              # slugify, etc.
+The API supports exactly these four roles:
+
+- `SUPER_ADMIN`
+- `PROPERTY_MANAGER`
+- `ACCOUNTANT`
+- `COMPLIANCE_OFFICER`
+
+## API Endpoints
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/health` | Public | Health check |
+| POST | `/api/auth/login` | Public | Login and receive access/refresh tokens |
+| POST | `/api/auth/refresh` | Public | Refresh tokens |
+| GET | `/api/auth/me` | Authenticated | Get current user |
+| GET | `/api/auth/roles` | Super Admin | List allowed roles |
+| POST | `/api/auth/register` | Super Admin | Create user with role |
+| POST | `/api/auth/logout` | Authenticated | Revoke session token version |
+
+## API Collection
+
+Use:
+
+- [api_collection.http](./api_collection.http) for REST Client style requests
+- [api_collection.json](./api_collection.json) for Postman import
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and set:
+
+```bash
+NODE_ENV=development
+PORT=5050
+DATABASE_URL="postgresql://postgres:your_password@localhost:5433/propman_db?schema=public"
+
+JWT_ACCESS_SECRET="replace-with-long-random-string"
+JWT_REFRESH_SECRET="replace-with-another-long-random-string"
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+
+# Optional first super admin bootstrap (recommended for first setup)
+BOOTSTRAP_SUPER_ADMIN_EMAIL=superadmin@example.com
+BOOTSTRAP_SUPER_ADMIN_PASSWORD=ChangeMe123!
+BOOTSTRAP_SUPER_ADMIN_NAME="System Super Admin"
 ```
 
 ## Setup
 
-1. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-   This runs `prisma generate` automatically (postinstall).
-
-2. **PostgreSQL & environment**
-
-   Copy `.env.example` to `.env` and set `DATABASE_URL` (app uses only this):
-
-   ```bash
-   cp .env.example .env
-   # Set DATABASE_URL (e.g. postgresql://user:password@localhost:5433/dbname?schema=public)
-   # POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD are for the Postgres container only
-   ```
-
-3. **Apply schema to the database**
-
-   **Option A – push schema (no migration history):**
-   ```bash
-   npm run db:push
-   ```
-
-   **Option B – create a migration (recommended for production):**
-   ```bash
-   npm run db:migrate
-   ```
-
-4. **Run the server**
-
-   ```bash
-   npm start
-   # or with auto-reload
-   npm run dev
-   ```
-
-   API base: `http://localhost:5050`
-
-## Docker
-
-### Postgres only (connect from code)
-
-Run Postgres in Docker and connect from your app on the host:
+1. Install dependencies:
 
 ```bash
-docker compose -f docker-compose.postgres.yml up -d
+npm install
 ```
 
-Postgres is exposed on **localhost:5433**. Set `DATABASE_URL` in `.env` (host=localhost, port=5433) and run your app (e.g. `npm run dev`). The container needs `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` in `.env`.
-
-### Full stack (Postgres + backend in Docker)
+2. Push schema to DB:
 
 ```bash
-docker compose up -d
+npm run db:push
 ```
 
-Put `DATABASE_URL` in `.env.docker` with host `postgres` (e.g. `postgresql://user:pass@postgres:5432/dbname?schema=public`). The Postgres container uses `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` from `.env`.
-
-First time, apply schema:
+3. Run server:
 
 ```bash
-docker compose exec backend npx prisma db push
+npm run dev
 ```
 
-## Prisma commands
+API base URL: `http://localhost:5050`
+
+## Tests (Jest)
+
+Run all tests:
+
+```bash
+npm test
+```
+
+Current test coverage focus:
+
+- Auth service unit tests
+- Auth routes tests with mocked middleware/service
+
+## Useful Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run db:generate` | Generate Prisma Client after schema changes |
-| `npm run db:push` | Push schema to DB (dev / prototyping) |
-| `npm run db:migrate` | Create and run migrations |
-
-## Products API
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/products` | List products (search, category, pagination) |
-| GET | `/api/products/slug/:slug` | Get product by slug |
-| GET | `/api/products/:id` | Get product by ID |
-| POST | `/api/products` | Create product |
-| PATCH/PUT | `/api/products/:id` | Update product |
-| DELETE | `/api/products/:id` | Delete product |
-
-### List & search
-
-- `GET /api/products?search=keyword` – search in name, description, SKU
-- `GET /api/products?category=Electronics`
-- `GET /api/products?page=1&limit=20`
-- `GET /api/products?isActive=true`
-
-### Create product body (JSON)
-
-```json
-{
-  "name": "Product Name",
-  "price": 29.99,
-  "description": "Optional description",
-  "slug": "optional-slug",
-  "sku": "SKU-001",
-  "stock": 100,
-  "category": "Electronics",
-  "imageUrl": "https://...",
-  "isActive": true
-}
-```
-
-Responses: `{ "success": true, "data": { ... } }` or list with `"pagination": { "page", "limit", "total", "totalPages" }`.
-
-## Health
-
-- `GET /health` – returns `{ "success": true, "message": "OK" }`
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:push` | Push schema |
+| `npm run db:migrate` | Create/apply migration in dev |
+| `npm run test` | Run Jest tests |
+| `npm run test:watch` | Run Jest in watch mode |

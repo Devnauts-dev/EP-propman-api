@@ -19,8 +19,8 @@ In `.env`, set:
 
 | Variable | Purpose | Example |
 |----------|---------|---------|
-| `DATABASE_URL` | Used by the app (Prisma). Must use **port 5433** for local Docker. | `postgresql://postgres:your_password@localhost:5433/ecommerce_db?schema=public` |
-| `POSTGRES_DB` | Database name (used by the Postgres container) | `ecommerce_db` |
+| `DATABASE_URL` | Used by the app (Prisma). Must use **port 5433** for local Docker. | `postgresql://postgres:your_password@localhost:5433/propman_db?schema=public` |
+| `POSTGRES_DB` | Database name (used by the Postgres container) | `propman_db` |
 | `POSTGRES_USER` | Postgres user | `postgres` |
 | `POSTGRES_PASSWORD` | Postgres password | Your chosen password |
 
@@ -32,9 +32,9 @@ Example `.env`:
 NODE_ENV=development
 PORT=5050
 
-DATABASE_URL="postgresql://postgres:mysecret@localhost:5433/ecommerce_db?schema=public"
+DATABASE_URL="postgresql://postgres:mysecret@localhost:5433/propman_db?schema=public"
 
-POSTGRES_DB=ecommerce_db
+POSTGRES_DB=propman_db
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=mysecret
 ```
@@ -112,7 +112,7 @@ docker compose -f docker-compose.postgres.yml up -d
 | `docker compose -f docker-compose.postgres.yml down` | Stop and remove the container (keeps data) |
 | `docker compose -f docker-compose.postgres.yml down -v` | Stop and remove the container and volume (deletes data) |
 | `docker compose -f docker-compose.postgres.yml logs -f postgres` | Follow Postgres logs |
-| `docker exec -it postgres psql -U postgres -d ecommerce_db` | Open a `psql` shell in the container |
+| `docker exec -it postgres psql -U postgres -d propman_db` | Open a `psql` shell in the container |
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { productRoutes } = require('./modules/products');
+const { authRoutes } = require('./modules/auth');
 const errorHandler = require('./shared/middleware/errorHandler');
 const notFound = require('./shared/middleware/notFound');
 
@@ -15,7 +15,7 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // 404 and error handler
 app.use(notFound);

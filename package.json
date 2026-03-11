@@ -1,7 +1,7 @@
 {
   "name": "devops-practice",
   "version": "1.0.0",
-  "description": "E-Commerce REST API backend with Express, PostgreSQL and Prisma",
+  "description": "EP PropMan Auth API backend with Express, PostgreSQL and Prisma",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db?schema=public JWT_ACCESS_SECRET=test_access_secret JWT_REFRESH_SECRET=test_refresh_secret jest --runInBand",
+    "test:watch": "npm run test -- --watch",
     "deploy": "docker compose up -d --build backend",
     "deploy:migrate": "docker compose exec backend npx prisma migrate deploy",
     "logs": "docker logs backend -f"
@@ -24,7 +25,9 @@
     "express",
     "postgresql",
     "prisma",
-    "ecommerce",
+    "property-management",
+    "auth",
+    "rbac",
     "rest-api"
   ],
   "author": "",
@@ -36,13 +39,17 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "dotenv": "^16.6.1",
     "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.0"
   },
   "devDependencies": {
-    "prisma": "^7.4.1"
+    "jest": "^30.2.0",
+    "prisma": "^7.4.1",
+    "supertest": "^7.1.4"
   }
 }

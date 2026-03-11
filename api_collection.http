@@ -1,0 +1,77 @@
+@baseUrl = http://localhost:5050
+@accessToken = REPLACE_WITH_ACCESS_TOKEN
+@refreshToken = REPLACE_WITH_REFRESH_TOKEN
+
+### ------------------------------------------------------------
+### EP PropMan Auth API Collection
+### Usage:
+### 1) Start server (npm run dev)
+### 2) Run LOGIN and copy access/refresh tokens
+### 3) Paste values in @accessToken and @refreshToken
+### ------------------------------------------------------------
+
+### Health Check
+# Expected: 200 OK
+GET {{baseUrl}}/health
+
+### Login (POST)
+# Endpoint: POST /api/auth/login
+# Purpose: Authenticate user and return access/refresh tokens.
+# Required body:
+# - email: valid user email
+# - password: user password
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "superadmin@example.com",
+  "password": "ChangeMe123!"
+}
+
+### Refresh Token (POST)
+# Endpoint: POST /api/auth/refresh
+# Purpose: Exchange refresh token for new access/refresh pair.
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Get Current User (GET)
+# Endpoint: GET /api/auth/me
+# Purpose: Return authenticated user profile.
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{accessToken}}
+
+### List Allowed Roles (GET, Super Admin only)
+# Endpoint: GET /api/auth/roles
+# Purpose: Return enum roles supported by backend.
+GET {{baseUrl}}/api/auth/roles
+Authorization: Bearer {{accessToken}}
+
+### Register New User (POST, Super Admin only)
+# Endpoint: POST /api/auth/register
+# Purpose: Create a new user account with one of the 4 roles.
+# Allowed roles:
+# - SUPER_ADMIN
+# - PROPERTY_MANAGER
+# - ACCOUNTANT
+# - COMPLIANCE_OFFICER
+POST {{baseUrl}}/api/auth/register
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "fullName": "Areeba Khan",
+  "email": "areeba.khan@example.com",
+  "password": "StrongPass123",
+  "role": "PROPERTY_MANAGER"
+}
+
+### Logout (POST)
+# Endpoint: POST /api/auth/logout
+# Purpose: Revoke current token version. Re-login required afterwards.
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{accessToken}}
+
