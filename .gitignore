@@ -1,16 +1,6 @@
 # Dependencies
 node_modules/
 
-# Environment (secrets) — keep .env.example, ignore the rest
-.env
-.env.dev
-.env.prod
-.env.docker
-.env.local
-.env.*.local
-!.env.example
-.env.postgres
-
 # Build / output
 dist/
 build/
