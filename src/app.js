@@ -14,6 +14,10 @@ app.get('/health', (req, res) => {
   res.json({ success: true, message: 'OK', timestamp: new Date().toISOString() });
 });
 
+app.get('/version', (req, res) => {
+  res.json({ success: true, message: 'Code is running on version v1.0.0', timestamp: new Date().toISOString() });
+});
+
 // API routes
 app.use('/api/auth', authRoutes);
 
