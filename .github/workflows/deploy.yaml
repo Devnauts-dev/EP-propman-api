@@ -59,7 +59,7 @@ jobs:
       - name: Deploy Via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.DEV_SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
