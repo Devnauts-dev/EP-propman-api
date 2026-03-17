@@ -15,7 +15,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/version', (req, res) => {
-  res.json({ success: true, message: 'Code is running on version v1.0.2', timestamp: new Date().toISOString() });
+  res.json({ success: true, message: 'Code is running on version v1.0.3', timestamp: new Date().toISOString() });
 });
 
 // API routes
