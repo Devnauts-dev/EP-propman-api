@@ -1,6 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const { authRoutes } = require('./modules');
+const {
+  authRoutes,
+  clientRoutes,
+  companyRoutes,
+  estateRoutes,
+  portfolioRoutes,
+} = require('./modules');
 const errorHandler = require('./shared/middleware/errorHandler');
 const notFound = require('./shared/middleware/notFound');
 
@@ -20,6 +26,10 @@ app.get('/version', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/clients', clientRoutes);
+app.use('/api/companies', companyRoutes);
+app.use('/api/estates', estateRoutes);
+app.use('/api/portfolios', portfolioRoutes);
 
 // 404 and error handler
 app.use(notFound);

@@ -11,7 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate",
-    "test": "cross-env NODE_ENV=test DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db?schema=public JWT_ACCESS_SECRET=test_access_secret JWT_REFRESH_SECRET=test_refresh_secret jest --runInBand",
+    "test": "cross-env NODE_ENV=test DATABASE_URL=postgresql://postgres:password@localhost:5432/ep_propman?schema=test JWT_ACCESS_SECRET=test_access_secret JWT_REFRESH_SECRET=test_refresh_secret jest --runInBand",
     "test:watch": "npm run test -- --watch",
     "deploy": "docker compose up -d --build backend",
     "deploy:migrate": "docker compose exec backend npx prisma migrate deploy",

@@ -34,3 +34,75 @@ model User {
   @@index([role])
   @@index([isActive])
 }
+
+model Client {
+  id           Int       @id @default(autoincrement())
+  name         String
+  legalName    String?   @map("legal_name")
+  primaryEmail String?   @map("primary_email")
+  primaryPhone String?   @map("primary_phone")
+  notes        String?
+  isActive     Boolean   @default(true) @map("is_active")
+  companies    Company[]
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@unique([name])
+}
+
+model Company {
+  id                  Int         @id @default(autoincrement())
+  clientId            Int         @map("client_id")
+  name                String
+  registrationNumber  String?     @map("registration_number")
+  emailSenderName     String?     @map("email_sender_name")
+  emailSenderAddress  String?     @map("email_sender_address")
+  emailReplyToAddress String?     @map("email_reply_to_address")
+  emailSignature      String?     @map("email_signature")
+  notes               String?
+  isActive            Boolean     @default(true) @map("is_active")
+  client              Client      @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  estates             Estate[]
+  portfolios          Portfolio[]
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+
+  @@unique([clientId, name])
+  @@index([clientId])
+}
+
+model Estate {
+  id           Int         @id @default(autoincrement())
+  companyId    Int         @map("company_id")
+  name         String
+  code         String?
+  addressLine1 String?     @map("address_line_1")
+  city         String?
+  notes        String?
+  isActive     Boolean     @default(true) @map("is_active")
+  company      Company     @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  portfolios   Portfolio[]
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model Portfolio {
+  id          Int       @id @default(autoincrement())
+  companyId   Int       @map("company_id")
+  estateId    Int       @map("estate_id")
+  name        String
+  code        String?
+  description String?
+  isActive    Boolean   @default(true) @map("is_active")
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  estate      Estate    @relation(fields: [estateId], references: [id], onDelete: Restrict)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@unique([estateId, name])
+  @@index([companyId])
+  @@index([estateId])
+}

@@ -1,7 +1,13 @@
 const { authRoutes } = require('./auth');
 const { adminModule } = require('./admin');
 const { financeModule } = require('./finance');
-const { organisationModule } = require('./organisation');
+const {
+  organisationModule,
+  clientRoutes,
+  companyRoutes,
+  estateRoutes,
+  portfolioRoutes,
+} = require('./organisation');
 const { propertiesModule } = require('./properties');
 const { reportingModule } = require('./reporting');
 const { tenantsModule } = require('./tenants');
@@ -19,5 +25,9 @@ const moduleRegistry = Object.freeze([
 
 module.exports = {
   authRoutes,
+  clientRoutes,
+  companyRoutes,
+  estateRoutes,
+  portfolioRoutes,
   moduleRegistry,
 };
