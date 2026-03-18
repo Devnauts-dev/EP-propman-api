@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { authRoutes } = require('./modules/auth');
+const { authRoutes } = require('./modules');
 const errorHandler = require('./shared/middleware/errorHandler');
 const notFound = require('./shared/middleware/notFound');
 

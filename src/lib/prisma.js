@@ -1,13 +1,13 @@
-require('dotenv').config();
+const config = require('../config');
 const { PrismaClient } = require('@prisma/client');
 const { PrismaPg } = require('@prisma/adapter-pg');
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = config.databaseUrl;
 const adapter = new PrismaPg({ connectionString });
 
 const prisma = new PrismaClient({
   adapter,
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log: config.env === 'development' ? ['query', 'error', 'warn'] : ['error'],
 });
 
 module.exports = prisma;

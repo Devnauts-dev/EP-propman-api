@@ -73,6 +73,37 @@ describe('auth.routes', () => {
     expect(authService.refresh).toHaveBeenCalledWith('old-refresh');
   });
 
+  test('GET /api/auth/me returns the current user', async () => {
+    const app = createApp();
+    authService.getCurrentUser.mockResolvedValue({
+      id: 1,
+      email: 'admin@example.com',
+      role: 'SUPER_ADMIN',
+      fullName: 'System Super Admin',
+    });
+
+    const response = await request(app)
+      .get('/api/auth/me')
+      .set('Authorization', 'Bearer test-access-token');
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(authService.getCurrentUser).toHaveBeenCalledWith(1);
+  });
+
+  test('POST /api/auth/logout revokes the current session', async () => {
+    const app = createApp();
+    authService.logout.mockResolvedValue({ loggedOut: true });
+
+    const response = await request(app)
+      .post('/api/auth/logout')
+      .set('Authorization', 'Bearer test-access-token');
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(authService.logout).toHaveBeenCalledWith(1);
+  });
+
   test('POST /api/auth/register creates user', async () => {
     const app = createApp();
     authService.register.mockResolvedValue({

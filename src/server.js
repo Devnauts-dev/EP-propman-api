@@ -2,7 +2,6 @@ const app = require('./app');
 const config = require('./config');
 const prisma = require('./lib/prisma');
 const { bootstrapSuperAdminFromEnv } = require('./modules/auth/auth.service');
-require('dotenv').config();
 
 async function start() {
   try {

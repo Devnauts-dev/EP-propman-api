@@ -1,9 +1,48 @@
-require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+
+const projectRoot = path.resolve(__dirname, '..', '..');
+
+function resolveEnvFilePath() {
+  const explicitPath = process.env.DOTENV_CONFIG_PATH || process.env.APP_ENV_FILE;
+  if (explicitPath) {
+    return path.resolve(projectRoot, explicitPath);
+  }
+
+  const defaultPath = path.resolve(projectRoot, '.env');
+  if (fs.existsSync(defaultPath)) {
+    return defaultPath;
+  }
+
+  const envName = process.env.NODE_ENV || 'development';
+  const namedEnvFiles = {
+    development: '.env.dev',
+    production: '.env.prod',
+  };
+
+  const preferredFile = namedEnvFiles[envName];
+  if (preferredFile) {
+    const preferredPath = path.resolve(projectRoot, preferredFile);
+    if (fs.existsSync(preferredPath)) {
+      return preferredPath;
+    }
+  }
+
+  return null;
+}
+
+const envFilePath = resolveEnvFilePath();
+
+if (envFilePath) {
+  dotenv.config({ path: envFilePath });
+}
 
 const config = {
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT, 10) || 5050,
   databaseUrl: process.env.DATABASE_URL,
+  envFilePath,
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET,
     refreshSecret: process.env.JWT_REFRESH_SECRET,

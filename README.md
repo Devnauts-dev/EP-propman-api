@@ -37,7 +37,14 @@ Use:
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and set:
+Backend env loading now works like this:
+
+- `.env` is the default local runtime file and remains the safest choice for day-to-day development.
+- `.env.dev` and `.env.prod` are optional alternates if you want environment-specific files.
+- `.env.docker` for the backend container in Docker Compose
+- `.env.example` as the canonical template
+
+Copy `.env.example` to `.env` for local work, or to one of the alternate files if you intend to point the app there explicitly.
 
 ```bash
 NODE_ENV=development
@@ -76,6 +83,18 @@ npm run dev
 ```
 
 API base URL: `http://localhost:5050`
+
+## Sprint 1 Module Scaffolds
+
+Sprint 1 keeps only the auth module functional. The following module folders now exist as scaffolds for later sprints:
+
+- `organisation`
+- `properties`
+- `tenants`
+- `finance`
+- `utilities`
+- `reporting`
+- `admin`
 
 ## Tests (Jest)
 
