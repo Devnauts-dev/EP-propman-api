@@ -3,7 +3,6 @@ const cors = require('cors');
 const { authRoutes } = require('./modules/auth');
 const errorHandler = require('./shared/middleware/errorHandler');
 const notFound = require('./shared/middleware/notFound');
-const computationRoute = require('./computationRoute');
 
 const app = express();
 
@@ -19,7 +18,6 @@ app.get('/version', (req, res) => {
   res.json({ success: true, message: 'Code is running on version v1.0.3', timestamp: new Date().toISOString() });
 });
 
-app.use('/compute', computationRoute);
 
 // API routes
 app.use('/api/auth', authRoutes);
