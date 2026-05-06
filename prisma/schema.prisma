@@ -18,6 +18,43 @@ enum Role {
   COMPLIANCE_OFFICER
 }
 
+enum PortfolioType {
+  RETAIL
+  OFFICE
+  INDUSTRIAL
+  RESIDENTIAL
+  MIXED_USE
+  OTHER
+}
+
+enum RegulatoryStatus {
+  INSIDE_ACT
+  OUTSIDE_1954_ACT
+}
+
+enum OccupancyStatus {
+  FULLY_OCCUPIED
+  PARTIALLY_OCCUPIED
+  VACANT
+}
+
+enum UnitType {
+  SHOP
+  OFFICE
+  WAREHOUSE
+  APARTMENT
+  STORAGE
+  PARKING
+  OTHER
+}
+
+enum UnitStatus {
+  OCCUPIED
+  VACANT
+  UNDER_MAINTENANCE
+  RESERVED
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   fullName     String    @map("full_name")
@@ -33,4 +70,119 @@ model User {
   @@index([email])
   @@index([role])
   @@index([isActive])
+}
+
+model Client {
+  id                      Int       @id @default(autoincrement())
+  name                    String
+  unifiedManagementStatus Boolean   @default(false) @map("unified_management_status")
+  isActive                Boolean   @default(true) @map("is_active")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  companies  Company[]
+  estates    Estate[]
+
+  @@index([name])
+  @@map("clients")
+}
+
+model Company {
+  id                Int      @id @default(autoincrement())
+  clientId          Int      @map("client_id")
+  name              String
+  emailSenderName   String?  @map("email_sender_name")
+  emailSenderAddress String? @map("email_sender_address")
+  emailReplyToAddress String? @map("email_reply_to_address")
+  emailSignature    String?  @map("email_signature")
+  vatStatus         Boolean  @default(false) @map("vat_status")
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  client  Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  estates Estate[]
+
+  @@index([clientId])
+  @@index([name])
+  @@map("companies")
+}
+
+model Estate {
+  id        Int      @id @default(autoincrement())
+  clientId  Int      @map("client_id")
+  companyId Int?     @map("company_id")
+  name      String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  client     Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  company    Company?    @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  portfolios Portfolio[]
+
+  @@index([clientId])
+  @@index([companyId])
+  @@index([name])
+  @@map("estates")
+}
+
+model Portfolio {
+  id        Int           @id @default(autoincrement())
+  estateId  Int           @map("estate_id")
+  name      String
+  type      PortfolioType @default(OTHER)
+  isActive  Boolean       @default(true) @map("is_active")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  estate     Estate     @relation(fields: [estateId], references: [id], onDelete: Cascade)
+  properties Property[]
+
+  @@index([estateId])
+  @@index([name])
+  @@map("portfolios")
+}
+
+model Property {
+  id               Int              @id @default(autoincrement())
+  portfolioId      Int              @map("portfolio_id")
+  name             String
+  address          String?
+  sizeNIA          Decimal?         @map("size_nia") @db.Decimal(12, 2)
+  sizeGIA          Decimal?         @map("size_gia") @db.Decimal(12, 2)
+  sizeIT2A         Decimal?         @map("size_it2a") @db.Decimal(12, 2)
+  sizeGEA          Decimal?         @map("size_gea") @db.Decimal(12, 2)
+  eavesHeight      Decimal?         @map("eaves_height") @db.Decimal(8, 2)
+  apexHeight       Decimal?         @map("apex_height") @db.Decimal(8, 2)
+  regulatoryStatus RegulatoryStatus @default(INSIDE_ACT) @map("regulatory_status")
+  occupancyStatus  OccupancyStatus  @default(VACANT) @map("occupancy_status")
+  isActive         Boolean          @default(true) @map("is_active")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  units     Unit[]
+
+  @@index([portfolioId])
+  @@index([name])
+  @@index([occupancyStatus])
+  @@map("properties")
+}
+
+model Unit {
+  id         Int        @id @default(autoincrement())
+  propertyId Int        @map("property_id")
+  unitNumber String     @map("unit_number")
+  type       UnitType   @default(OTHER)
+  status     UnitStatus @default(VACANT)
+  isActive   Boolean    @default(true) @map("is_active")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([status])
+  @@map("units")
 }
