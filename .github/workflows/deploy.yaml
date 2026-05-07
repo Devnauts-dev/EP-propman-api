@@ -64,7 +64,9 @@ jobs:
           host: ${{ secrets.DEV_SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.DEV_SSH_KEY }}
+          script_stop: true
           script: |
+            set -e
             cd /home/ubuntu/EP-propman-api
             git pull origin stage
             npm install
@@ -86,7 +88,9 @@ jobs:
           host: ${{ secrets.PROD_SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.PROD_SSH_KEY }}
+          script_stop: true
           script: |
+            set -e
             cd /home/ubuntu/EP-propman-api
             git pull origin main
             npm install
