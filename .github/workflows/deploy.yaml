@@ -41,7 +41,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
-      - name: Sync Test Database Schema
+      - name: Run Database Migrations
         run: npm run db:deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db?schema=public
