@@ -2,13 +2,11 @@ const app = require('./app');
 const config = require('./config');
 const prisma = require('./lib/prisma');
 const { bootstrapSuperAdminFromEnv } = require('./modules/auth/auth.service');
-const { applySchema } = require('../scripts/apply-schema');
 require('dotenv').config();
 
 async function start() {
   try {
     config.validateConfig();
-    await applySchema();
     await prisma.$connect();
     console.log('PostgreSQL connected (Prisma)');
     await bootstrapSuperAdminFromEnv();
