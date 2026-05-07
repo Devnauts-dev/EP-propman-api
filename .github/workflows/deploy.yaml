@@ -41,8 +41,8 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
-      - name: Run Database Migrations
-        run: npx prisma migrate deploy
+      - name: Sync Test Database Schema
+        run: npm run db:deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db?schema=public
 
@@ -68,6 +68,7 @@ jobs:
             cd /home/ubuntu/EP-propman-api
             git pull origin stage
             npm install
+            npm run db:deploy
             pm2 restart ${{ secrets.DEV_SERVICE_NAME }}
 
   deploy-prod:
@@ -89,4 +90,5 @@ jobs:
             cd /home/ubuntu/EP-propman-api
             git pull origin main
             npm install
+            npm run db:deploy
             pm2 restart ${{ secrets.PROD_SERVICE_NAME }}
