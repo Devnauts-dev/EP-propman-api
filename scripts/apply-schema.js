@@ -18,7 +18,7 @@ function describeDatabase(url) {
   return `${parsed.hostname}:${parsed.port || '5432'}${parsed.pathname}${parsed.search}`;
 }
 
-async function main() {
+async function applySchema() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error('DATABASE_URL is required to apply the database schema');
@@ -64,7 +64,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  applySchema().catch((error) => {
+    console.error(error.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { applySchema };
