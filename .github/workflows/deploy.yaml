@@ -68,9 +68,10 @@ jobs:
           script: |
             set -e
             cd /home/ubuntu/EP-propman-api
-            git pull origin stage
+            git fetch origin stage
+            git reset --hard origin/stage
             npm install
-            pm2 restart ${{ secrets.DEV_SERVICE_NAME }}
+            pm2 restart ${{ secrets.DEV_SERVICE_NAME }} --update-env
 
   deploy-prod:
     runs-on: ubuntu-latest
@@ -91,6 +92,7 @@ jobs:
           script: |
             set -e
             cd /home/ubuntu/EP-propman-api
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             npm install
-            pm2 restart ${{ secrets.PROD_SERVICE_NAME }}
+            pm2 restart ${{ secrets.PROD_SERVICE_NAME }} --update-env
